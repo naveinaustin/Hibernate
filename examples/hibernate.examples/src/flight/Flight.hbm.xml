@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+
+<hibernate-mapping>
+	<class name="flight.Flight" table="FLIGHTS">
+		<id name="flightNo" column="FLIGHT_NO"/>
+		<property name="airlines" type="string" column="AIRLINES"/>
+		<property name="from" type="string" column="SRC"/>
+		<property name="to" type="string" column="DST"/>
+		
+		<set name="stewards" table="FLIGHT_STEWARD">
+			<key column="FLIGHT_NO"/>
+			<many-to-many column="EMP_ID" class="flight.FlightSteward"/>
+		</set>
+		
+		<map name="passengers" cascade="all"> <!-- cascade combine - combine all related data -->
+			<key column="FLIGHT_NO" not-null="true"/>
+			<map-key formula="name" type="string"/> <!-- user defined conditions -->
+			<one-to-many class="flight.Passenger"/>
+		</map>
+	
+	</class>
+</hibernate-mapping>

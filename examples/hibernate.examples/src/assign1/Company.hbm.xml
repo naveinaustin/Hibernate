@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+
+<hibernate-mapping>
+	<class name="assign1.Company" table="COMPANY">
+		<id name="name" type="string" column="COMPANY_NAME"/>
+		<property name="address" type="string" column="AIRLINES"/>
+		
+		<set name="employees" table="COMP_EMP">
+			<key column="COMPANY_NAME"/>
+			<one-to-many class="assign1.Employee"/>
+		</set>
+	</class>
+</hibernate-mapping>

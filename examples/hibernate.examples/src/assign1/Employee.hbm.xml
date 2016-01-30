@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping>
+	<class name="assign1.Employee" table="Employee">
+		<id name="empId" type="int" column="EMP_ID">
+			<generator class="native"/>
+		</id>
+		<!-- Table per class hierarchy -->
+		<discriminator column="EMP_TYPE" type="string"/>
+		<property name="name" column="NAME"/> <!-- no type so by default takes string -->
+		<property name="dob" column="DOB"/>
+		<property name="address" column="ADDRESS"/>
+		
+		<subclass name="assign1.UnionEmployee" discriminator-value="UNION"/>
+		<subclass name="assign1.NonUnionEmployee" discriminator-value="NON_UNION"/>
+	</class>
+</hibernate-mapping>

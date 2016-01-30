@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping>
+	<!-- Table per sub class -->
+	<class name="com.Baggage" table="ALLBAGGAGES">
+		<id name="id" type="int" column="NUMBER">
+			<generator class="hilo"/>
+		</id>
+		
+		<joined-subclass name="com.CheckinBaggage" table="CHECKINBAGGAGE">
+			<key column="NUMBER"/>
+			<property name="name" column="PASSENGERNAME"></property>
+			<property name="weight" column="WEIGHT"></property>
+		</joined-subclass>
+		
+		<joined-subclass name="com.HandBaggage" table="HANDBAGGAGE">
+			<key column="NUMBER"/>
+			<property name="name" column="PASSENGERNAME"></property>
+			<property name="weight" column="WEIGHT"></property>
+		</joined-subclass>
+	</class>
+</hibernate-mapping>

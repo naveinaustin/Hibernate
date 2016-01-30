@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping>
+	<class name="com.Airport" table="AIRPORT">
+		<id name="id" type="int" column="AIRPORT_ID">
+			<generator class="native"/>
+		</id>
+		<!-- Table per class hierarchy -->
+		<discriminator column="AIRPORT_TYPE" type="string"/>
+		<property name="city" column="CITY"/> <!-- no type so by default takes string -->
+		<property name="name" column="NAME"/>
+		
+		<subclass name="com.DomesticAirport" discriminator-value="DOMESTIC"/>
+		<subclass name="com.InternationalAirport" discriminator-value="INTERNATIONAL"/>
+	</class>
+</hibernate-mapping>

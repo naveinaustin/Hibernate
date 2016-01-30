@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+          "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+          "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+	<session-factory>
+		<property name="connection.url">jdbc:mysql://localhost:3306/hibernate</property>
+		<property name="connection.username">system</property>
+		<property name="connection.password">password</property>
+		<property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+		<property name="dialect">org.hibernate.dialect.MySQL5Dialect</property>
+		<property name="transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</property>
+		<property name="current_session.context_class">thread</property> <!-- Thread application, if not given is singleton -->
+		<property name="hibernate.show_sql">true</property> <!-- show generated sql statement -->
+		<property name="hbm2ddl.auto">update</property> <!-- if table not there create else update -->
+		
+		<mapping resource="com/Airport.hbm.xml"/>
+		<mapping resource="com/Baggage.hbm.xml"/>
+		<mapping resource="example/products/CD.hbm.xml" />
+		<mapping resource="flight/Flight.hbm.xml" />
+		<mapping resource="flight/FlightSteward.hbm.xml" />
+		<mapping resource="flight/Passenger.hbm.xml" />
+		<mapping resource="list/Mappings.hbm.xml" />
+		<mapping resource="set/Mappings.hbm.xml" />
+		<mapping resource="bag/Mappings.hbm.xml" />
+		<mapping resource="idclass/Customer.hbm.xml" />
+		<mapping resource="basic/User.hbm.xml" />
+		<mapping resource="iterate/Item.hbm.xml" />
+		<mapping resource="pagination/DataPoint.hbm.xml" />
+		<mapping resource="version/PersonThing.hbm.xml" />
+	</session-factory>
+</hibernate-configuration>

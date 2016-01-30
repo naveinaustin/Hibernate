@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+
+<hibernate-mapping>
+	<class name="flight.FlightSteward" table="STEWARDS">
+		<id name="empID" column="EMP_ID"/> <!-- No generator so user has to enter the value -->
+		<property name="name" type="string" column="NAME"/>
+		<property name="age" type="int" column="AGE"/>
+		<property name="nativeCity" type="string" column="NATIVE_CITY"/>
+		
+	</class>
+</hibernate-mapping>

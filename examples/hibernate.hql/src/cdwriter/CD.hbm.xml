@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping package="cdwriter"> 
+<class	name="cdwriter.CD"
+table="cd"
+discriminator-value="cd"> 
+<id	name="id"
+type="integer"
+unsaved-value="0">
+<generator	class="hilo"/>
+</id>
+
+	<property name="title"/>
+		<property name="artist"/>
+		<property name="purchasedate" type="date"/> 
+		<property name="cost" type="double"/> 
+</class>
+
+<class 	name="cdwriter.SpecialEditionCD"
+                  table="secd">
+
+<id	name="id"
+type="integer"
+unsaved-value="0">
+<generator	class="hilo"/>
+</id>
+
+	<property name="title"/>
+		<property name="artist"/>
+		<property name="purchasedate" type="date"/> 
+		<property name="cost" type="double"/> 
+  <property name="newfeatures" type="string"/>
+</class>
+
+<class 	name="cdwriter.InternationalCD"
+     			table="icd">
+<id	name="id"
+type="integer"
+unsaved-value="0">
+<generator	class="hilo"/>
+</id>
+
+
+	<property name="title"/>
+		<property name="artist"/>
+		<property name="purchasedate" type="date"/> 
+		<property name="cost" type="double"/> 
+  <property name="languages"/>
+  <property name="region"/>
+</class> 
+
+
+
+</hibernate-mapping>
+

@@ -1,0 +1,10 @@
+insert into SPOKEN_LANGUAGE(lan_code, lan_name) values ('UK','English');
+insert into SPOKEN_LANGUAGE(lan_code, lan_name) values ('FR','French');
+insert into SPOKEN_LANGUAGE(lan_code, lan_name) values ('DE','German');
+insert into SPOKEN_LANGUAGE(lan_code, lan_name) values ('NL','Dutch');
+insert into SPOKEN_LANGUAGE(lan_code, lan_name) values ('ES','Spanish');
+insert into SPOKEN_LANGUAGE(lan_code, lan_name) values ('IT','Italian');
+insert into SPOKEN_LANGUAGE(lan_code, lan_name) values ('PT','Portugese');
+insert into SPOKEN_LANGUAGE(lan_code, lan_name) values ('GR','Greek');
+insert into SPOKEN_LANGUAGE(lan_code, lan_name) values ('DN','Danish');
+insert into SPOKEN_LANGUAGE(lan_code, lan_name) values ('SE','Sweedish');

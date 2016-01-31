@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/1"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/1">
+        <file>file:/C:/handsonlabs/hibernatecaching/samples/HibernateCacheEnabled/src/com/wakaleo/articles/caching/businessobjects/Airport.hbm.xml</file>
+        <file>file:/C:/handsonlabs/hibernatecaching/samples/HibernateCacheEnabled/src/com/wakaleo/articles/caching/businessobjects/Country.hbm.xml</file>
+        <file>file:/C:/handsonlabs/hibernatecaching/samples/HibernateCacheEnabled/src/com/wakaleo/articles/caching/businessobjects/Employee.hbm.xml</file>
+        <file>file:/C:/handsonlabs/hibernatecaching/samples/HibernateCacheEnabled/src/hibernate.cfg.xml</file>
+        <file>file:/C:/handsonlabs/hibernatecaching/samples/HibernateCacheEnabled/test/com/wakaleo/articles/caching/dao/CountryDAOTest.java</file>
+        <file>file:/C:/handsonlabs/hibernatecaching/samples/HibernateCacheEnabled/test/com/wakaleo/articles/caching/dao/EmployeeDAOTest.java</file>
+    </open-files>
+</project-private>

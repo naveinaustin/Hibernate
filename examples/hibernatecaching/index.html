@@ -1,0 +1,1267 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <script src="index_files/tigris.txt" type="text/javascript"></script>
+  <link rel="stylesheet" type="text/css" href="index_files/netbeans.css">
+  <title>LAB-3518: Hibernate Caching</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <meta name="SourceCastVersion" content="2.6.2.4.10">
+  <link rel="shortcut icon" href="http://www.netbeans.org/favicon.ico"
+ type="image/x-icon">
+  <meta name="keywords"
+ content="NetBeans, IDE, Platform, free, open source, developer">
+  <link rel="stylesheet" href="index_files/netbeans_002.css">
+  <meta name="author" content="Sang Shin">
+  <style type="text/css">
+#search {height:100%;}
+#topmodule {align:right;}
+  </style>
+  <script language="JavaScript" type="text/javascript">
+<!--
+function get_sc_login() {
+  var sclogin = "guest";
+  return (sclogin);
+}
+var username=get_sc_login();
+//-->
+  </script>
+  <meta
+ content="LAB-3518: Hibernate Caching hands-on lab, hibernate examples, Hibernate NetBeans projects"
+ name="description">
+</head>
+<body onload="loginfocus()" class="composite"
+ style="background-image: url(index_files/beige.jpg);">
+<!-- begin TopTabs --><!-- end TopTabs --><!-- start NavCol --><!-- end NavCol --><!-- Servlet-Specific template --><!-- Show servlet name if it is a servlet -->
+<br>
+<br>
+<h1 style="text-align: center;">Hibernate Caching<br>
+</h1>
+<div class="articledate" style="margin-left: 0px; text-align: center;"><a
+ href="mailto:Teera.K@sun.com"><span style="text-decoration: underline;"><span
+ style="font-weight: bold;">Teera.K@sun.com</span></span></a>,
+<a href="mailto:sang.shin@sun.com">sang.shin@sun.com</a>,&nbsp; <a
+ href="http://www.javapassion.com/j2ee">www.javapassion.com/j2ee</a><br>
+<br>
+<img alt="" src="index_files/teera.jpg"
+ style="width: 73px; height: 78px;"> <img alt=""
+ src="index_files/sshin51.jpg" style="width: 47px; height: 79px;"><br>
+</div>
+<p>In this hands-on lab, you are going to learn how to configure and
+enable Hibernate's second-level caching capability.&nbsp; This lab is
+created based on <a href="http://www.devx.com/dbzone/Article/29685/">Speed
+up
+your Hibernate Applications with Second-Level Caching article</a> from
+www.devx.com.</p>
+<br>
+<p></p>
+<p align="center"><b>Expected duration: 65 minutes</b></p>
+<div class="indent">
+<h3 class="tutorial"><a name="software"></a>Software Needed</h3>
+<p>Before you begin, you need to install the following software on your
+computer. The Hibernate library files&nbsp; are
+already included as part of the hands-on lab zip file so you don't have
+to download Hibernate yourself.</p>
+<ul>
+</ul>
+<ul>
+  <li>Java Standard Development Kit (JDK™) version 5.0 (<a
+ href="http://java.sun.com/j2se/1.5.0/download.jsp">download</a>) or
+6.0 (<a href="http://java.sun.com/javase/downloads/index.jsp">download</a>)</li>
+  <ul>
+    <li>Select <span style="font-weight: bold;">JDK 6 Update x</span>
+from the download page<br>
+    </li>
+  </ul>
+  <li>NetBeans IDE 6.0 (<a
+ href="http://download.netbeans.org/netbeans/6.1/final/">download</a>)</li>
+  <ul>
+    <li>Download either "<span style="font-weight: bold;">Web &amp;
+Java EE</span>" or "<span style="font-weight: bold;">All</span>"
+bundles.</li>
+  </ul>
+</ul>
+<ul>
+  <li>3518_hibernatecaching.zip (<a
+ href="http://www.javapassion.com/handsonlabs/3518_hibernatecaching.zip">download</a>)</li>
+  <ul>
+    <li>Download it and unzip it in a directory of your choice.&nbsp;
+We will call the directory as &lt;LAB_UNZIPPED_DIRECTORY&gt; in this
+document. </li>
+    <li>It
+contains Hibernate 3.2 library files and Derby
+client driver so you don't need to download Hibernate yourself.<br>
+    </li>
+  </ul>
+</ul>
+<br>
+<h3 class="tutorial"><a name="Change_Log"></a>Change Log<br>
+</h3>
+<ul>
+  <li>September 25th, 2007: Created</li>
+  <li>Nov. 15th, 2007: Cosmetic changes are made</li>
+  <li>March 31st, 2008: Sample projects use NetBeans 6.0.1 and
+HibernateCore NetBeans library</li>
+  <li>June 12th, 2008: Hibernate plug-in of NetBeans 6.1 is used.</li>
+</ul>
+<br>
+<h3 class="tutorial">Things to be done (by Sang Shin)<br>
+</h3>
+<ul>
+  <li>Give more detailed information on how to run sql file within
+NetBeans (without cutting and pasting)</li>
+</ul>
+<br>
+<h3 class="tutorial"><a name="Tutorial_Exercises"></a>Lab Exercises</h3>
+<ul>
+  <li><a href="#Exercise_0">Exercise 0: Start Derby database server,
+create "mydatabase" database, and add lab sample data</a><br>
+  </li>
+  <li><a href="#Exercise_1">Exercise 1: Hibernate Querying without
+caching (45
+minutes)</a><br>
+  </li>
+  <li><a href="#Exercise_2">Exercise 2: Hibernate Querying with caching
+enabled(20 minutes)</a><br>
+  </li>
+  <li><a href="#Homework">Homework
+Exercise (for people who
+are taking Sang Shin's "Java EE Programming online course")</a></li>
+</ul>
+</div>
+<br>
+<h2><a name="Exercise_0"></a>Exercise 0: Start Java DB (code-named as
+Derby) database server
+and create "mydatabase" database <br>
+</h2>
+<ol>
+1. Start the Java DB (Derby) database server if you have not done so
+yet.&nbsp; <br>
+  <ul>
+    <li>If you don't know how to start the Java DB database server,
+please see "<a
+ href="http://www.javapassion.com/handsonlabs/hibernatestepbystep/#0.1">Start
+Derby database server" of the "Hibernate Step by
+Step"</a> hands-on lab.<br>
+      <br>
+    </li>
+  </ul>
+2. Create "mydatabase" database if you have not done so yet.&nbsp;<br>
+  <ul>
+    <li>If you don't know how to create a database over Java DB
+database server, please see <a
+ href="http://www.javapassion.com/handsonlabs/hibernatestepbystep/#0.2">"Create
+a database of your own called
+mydatabase" of the "Hibernate Step by Step"</a> hands-on lab<br>
+      <br>
+    </li>
+  </ul>
+</ol>
+<div style="margin-left: 40px;">3. Install Hibernate plug-in to the
+NetBeans IDE as described <a
+ href="http://www.javapassion.com/handsonlabs/hibernatestepbystep/#0.3">here</a>.<br>
+</div>
+<ol>
+4. Run <b><a href="script/create.sql">create.sql</a></b> SQL script
+which is located under
+&lt;LAB_UNZIPPED_DIRECTORY&gt;/hibernatecaching/script directory. This
+script
+will create database table used in this lab<br>
+</ol>
+<ol>
+  <br>
+  <ul>
+    <li>Select <b>Runtime</b> tab window</li>
+    <li>Expand <b>Databases</b></li>
+    <li>Select JDBC connection for <b>mydatabase</b> you created
+earlier<br>
+      <br>
+      <img src="index_files/javadb1.png" height="464" width="688"><br>
+      <br>
+    </li>
+    <li>Right-click the connection and select <b>Execute Command</b><br>
+      <br>
+      <img src="index_files/javadb2.png" height="457" width="690"><br>
+      <br>
+    </li>
+    <li>Copy-and-paste SQL script in <b><a href="script/create.sql">create.sql</a></b>
+file to Netbeans SQL Command panel</li>
+    <li>Click <b>Run SQL</b> to run the script<br>
+      <br>
+      <img src="index_files/javadb3.png" height="534" width="785"><br>
+    </li>
+  </ul>
+  <p><img alt="" src="index_files/newroll.gif"
+ style="width: 43px; height: 18px;">&nbsp; Actually there is a better
+way of doing this as described below.</p>
+</ol>
+<div style="margin-left: 40px;">
+<ul>
+  <li>Select Windows from Top-level menu and select Favorite Windows.</li>
+  <li>Add &lt;LAB_UNZIPPED_DIRECTORY&gt;/hibernatecaching/sql&nbsp;
+directory as a directory.</li>
+  <li>Right click create.sql file and select Run<br>
+  </li>
+</ul>
+</div>
+<ol>
+  <p>5. Repeat the above step for the folloing scripts in the order
+specified. These scripts are located under&nbsp;
+&lt;LAB_UNZIPPED_DIRECTORY&gt;/hibernatecaching/script directory.<br>
+  </p>
+  <ul>
+    <li><a href="script/country.sql">country.sql</a></li>
+    <li><a href="script/airport.sql">airport.sql</a></li>
+    <li><a href="script/employee.sql">employee.sql</a></li>
+    <li><a href="script/spoken_language.sql">spoken_language.sql</a></li>
+    <li><a href="script/employee_speaks_language.sql">employee_speaks_language.sql</a><br>
+      <span style="text-decoration: underline;"><span
+ style="font-weight: bold;"> </span></span> </li>
+  </ul>
+  <blockquote>
+    <ol>
+    </ol>
+  </blockquote>
+</ol>
+<div style="margin-left: 40px;"></div>
+<h2><a name="Exercise_1"></a>Exercise 1: Hibernate Query Without Caching<br>
+</h2>
+<p style="margin-left: 40px;">In this exercise, you are going to run
+Hibernate querying on large database without caching and examine query
+result.<br>
+<br>
+</p>
+<p
+ style="border-bottom: 0.5px solid Black; width: 100%; margin-left: 40px;"><strong><a
+ name="1.1"></a>(1.1) Open and run "HibernateCache" project</strong></p>
+<p style="margin-left: 40px;">1. Open <span style="font-weight: bold;">HibernateCache</span>
+NetBeans project.&nbsp; <br>
+</p>
+<ul style="margin-left: 40px;">
+  <li>Select <span style="font-weight: bold;">File</span>-&gt;<span
+ style="font-weight: bold;">Open Project (Ctrl+Shift+O)</span>. The <span
+ style="font-weight: bold;">Open Project</span> dialog box appears.</li>
+  <li>Browse down to <span style="font-weight: bold;">&lt;LAB_UNZIPPED_DIRECTORY&gt;/hibernatecaching/samples</span>
+directory.&nbsp; <br>
+  </li>
+  <ul>
+    <li>If you unzipped the <span style="font-weight: bold;">3518_hibernatecaching.zip</span>
+file under C:\handsonlabs directory under Windows, the directory to
+which you want
+to browse down should be <span style="font-weight: bold;">C:\handsonlas\hibernatecaching\samples.</span></li>
+    <li>If you unzipped the <span style="font-weight: bold;">3518_hibernatecaching.zip</span>
+file under <span style="font-weight: bold;">$HOME/handsonlabs</span>
+directory
+under Solaris/Linux, the directory to which you want to browse down
+should be <span style="font-weight: bold;">$HOME/handsonlabs/hibernatecaching/samples.</span><span
+ style="font-weight: bold;"></span></li>
+  </ul>
+  <li>Select <span style="font-weight: bold; color: rgb(255, 0, 0);">HibernateCache</span>.&nbsp;
+  </li>
+  <li>Click <span style="font-weight: bold;">Open Project</span>.&nbsp;
+    <br>
+  </li>
+  <li>Observe that the <span style="font-weight: bold;">HibernateCache</span>
+project node appears under <span style="font-weight: bold;">Projects </span>tab
+window.</li>
+</ul>
+<p style="margin-left: 40px;"><br>
+2. Resolve the references to Hibernate library files and client JDBC
+driver as desribed in <a
+ href="http://www.javapassion.com/handsonlabs/hibernatebasics/index.html#2._Resolve_the_references_to_Hibernate">step
+1.1 of the "Hibernate Basics" hands-on lab.</a></p>
+<p style="margin-left: 40px;">3. Build <strong>HibernateCache</strong>
+project.<br>
+</p>
+<div style="margin-left: 40px;">
+<ul>
+  <li>Right click HibernateCache project node and select Build Project
+(for NetBeans 5.5) or Build (for NetBeans 6.0).<br>
+  </li>
+</ul>
+<img alt="" src="index_files/1_cache1.png"
+ style="width: 743px; height: 643px;"><br>
+</div>
+<p style="margin-left: 40px;">4. Run the<strong> HibernateCache Test
+Package</strong></p>
+<ul style="margin-left: 40px;">
+  <li>Expand <span style="font-weight: bold;">Test
+Packages-&gt;com.wakealeo.articles.caching.dao</span>.<br>
+  </li>
+  <li>Right click on <strong>CountryDAOTest.java</strong> and select <span
+ style="font-weight: bold;">Run File</span>.</li>
+</ul>
+<div style="margin-left: 40px;"><img alt=""
+ src="index_files/1_cache2.png" style="width: 743px; height: 643px;"><br>
+<ul>
+  <li>Wait until you see "<span style="font-weight: bold;">The test
+passed</span>" message in the <span style="font-weight: bold;">Statistics
+    </span>pane.</li>
+</ul>
+<img alt="" src="index_files/1_cache2.1.png"
+ style="width: 743px; height: 643px;"><br>
+<ul>
+  <li>Click <span style="font-weight: bold;">Output </span>window tab.<br>
+  </li>
+  <li>Observe the result in the <span style="font-weight: bold;">Output</span>
+window as shown below.</li>
+</ul>
+<img alt="" src="index_files/1_cache3.png"
+ style="width: 743px; height: 643px;"><br>
+Figure 1.1-1 Result from running
+CountryDAOTest.java will look like<br>
+</div>
+<div style="margin-left: 40px;"><br>
+<ul>
+  <li>Right click on <strong>EmployeeDAOTest.java </strong>and select
+    <span style="font-weight: bold;">Run File</span>.</li>
+  <li>Wait until you see "All 3 tests passed" message in the Statistics
+pane.</li>
+  <li>Click Output window tab.</li>
+  <li>Observe the result in the <span style="font-weight: bold;">Output</span>
+window as shown below.</li>
+</ul>
+<img alt="" src="index_files/1_cache4.png"
+ style="width: 743px; height: 643px;"><br>
+</div>
+&nbsp; <br>
+<p
+ style="border-bottom: 0.5px solid Black; width: 100%; margin-left: 40px;"><strong><a
+ name="1.2"></a>(1.2) Look under the hood of the "HibernateCache"
+project</strong></p>
+<p style="margin-left: 40px;">1. Study <strong>Country.java </strong>code,
+as shown in figure 1.2-1 below. This is a POJO class.</p>
+<p style="margin-left: 40px;"></p>
+<div style="margin-left: 40px;">
+<table style="width: 100%; text-align: left;" border="1" cellpadding="2"
+ cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">package
+com.wakaleo.articles.caching.businessobjects;<br>
+      <br>
+import java.util.Set;<br>
+      <br>
+public class Country {<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; private Long id;<br>
+&nbsp;&nbsp;&nbsp; private String code;<br>
+&nbsp;&nbsp;&nbsp; private String name;<br>
+&nbsp;&nbsp;&nbsp; private Set airports;<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; public String getCode() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return code;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; public void setCode(String code) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.code = code;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; public Long getId() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return id;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; public void setId(Long id) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.id = id;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; public String getName() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return name;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; public void setName(String name) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.name = name;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; public Set&lt;Airport&gt; getAirports() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return airports;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; public void setAirports(Set&lt;Airport&gt; airports)
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.airports = airports;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; <br>
+}<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+Country.java<br>
+<br>
+2. Study <strong>Country.hbm.xml</strong>,
+this is Hibernate entity mapping file for Country. Pay attention to the
+bold-fonted part indicating that hibernate caching is disabled.<br>
+<br>
+<table style="width: 100%; text-align: left;" border="1" cellpadding="2"
+ cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">&lt;?xml version="1.0"?&gt;<br>
+      <br>
+&lt;!DOCTYPE hibernate-mapping PUBLIC<br>
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN"<br>
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd"&gt;<br>
+      <br>
+&lt;hibernate-mapping
+package="com.wakaleo.articles.caching.businessobjects"&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;class name="Country" table="COUNTRY"
+dynamic-update="true"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;meta
+attribute="implement-equals"&gt;true&lt;/meta&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+ style="color: rgb(255, 0, 0);"> </span><span
+ style="font-weight: bold; color: rgb(255, 0, 0);">&lt;!--cache
+usage="read-only"/--&gt;</span><br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;id name="id" type="long"
+unsaved-value="null" &gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;column name="cn_id" not-null="true"/&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;generator class="increment"/&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/id&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;property
+column="cn_code" name="code" type="string"/&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;property
+column="cn_name" name="name" type="string"/&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;set name="airports" &gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+ style="font-weight: bold; color: rgb(255, 0, 0);"> &lt;!-- cache
+usage="read-only"/ --&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;key column="cn_id"/&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;one-to-many class="Airport"/&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/set&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;/class&gt;<br>
+&lt;/hibernate-mapping&gt;<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+Country.hbm.xml<br>
+<br>
+3. Study <strong>CountryDAO.java </strong>code
+as shown in figure 1.2-3 below. This is Data Access Object class that
+is used to retrieve Country entity from database.<br>
+<br>
+<table style="width: 100%; text-align: left;" border="1" cellpadding="2"
+ cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">package
+com.wakaleo.articles.caching.dao;<br>
+      <br>
+import java.util.List;<br>
+import com.wakaleo.articles.caching.businessobjects.Country;<br>
+      <br>
+public class CountryDAO {<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; public Country findCountryByCode(String code) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span
+ style="font-weight: bold;">return (Country)
+SessionManager.currentSession()</span><br style="font-weight: bold;">
+      <span style="font-weight: bold;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+.createQuery("from Country as c where c.code = :code")</span><br
+ style="font-weight: bold;">
+      <span style="font-weight: bold;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+.setParameter("code",code)</span><br style="font-weight: bold;">
+      <span style="font-weight: bold;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+.uniqueResult();</span><br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; public List getCountries() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return
+SessionManager.currentSession().createQuery("from Country as c order by
+c.name").setCacheable(true).list();<br>
+&nbsp;&nbsp;&nbsp; }<br>
+}<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+CountryDAO.java<br>
+<br>
+4. Study <strong>SessionManager.java </strong>class
+as shown in figure 1.2-4 below. This class manages Hibernate session
+and logging.<br>
+<br>
+<table style="width: 100%; text-align: left;" border="1" cellpadding="2"
+ cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">package
+com.wakaleo.articles.caching.dao;<br>
+      <br>
+import org.hibernate.HibernateException;<br>
+import org.hibernate.Session;<br>
+import org.hibernate.SessionFactory;<br>
+import org.hibernate.cfg.Configuration;<br>
+import org.apache.commons.logging.Log;<br>
+import org.apache.commons.logging.LogFactory;<br>
+      <br>
+      <br>
+public final class SessionManager {<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp;&nbsp; * Parameter used to define the XML Hibernate
+configuration file<br>
+&nbsp;&nbsp;&nbsp;&nbsp; */<br>
+&nbsp;&nbsp;&nbsp; private static final String
+HIBERNATE_CONFIGURATION_FILE_PROPERTY = "hibernate.configuration.file";<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp;&nbsp; * Class logger<br>
+&nbsp;&nbsp;&nbsp;&nbsp; */<br>
+&nbsp;&nbsp;&nbsp; private static Log log =
+LogFactory.getLog(SessionManager.class);<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp;&nbsp; * The one and only session manager instance<br>
+&nbsp;&nbsp;&nbsp;&nbsp; */<br>
+&nbsp;&nbsp;&nbsp; private static SessionManager sessionManager = new
+SessionManager();<br>
+&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp;&nbsp; * The one and only Hibernate session factory.<br>
+&nbsp;&nbsp;&nbsp;&nbsp; */<br>
+&nbsp;&nbsp;&nbsp; private static final SessionFactory sessionFactory;<br>
+&nbsp;&nbsp;&nbsp; static {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try {<br>
+// Create the SessionFactory<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+sessionFactory = new Configuration().configure().buildSessionFactory();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; } catch (HibernateException
+ex) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+throw new RuntimeException("Configuration problem: " + ex.getMessage(),
+ex);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp;&nbsp; * The thread-local Hibernate session object<br>
+&nbsp;&nbsp;&nbsp;&nbsp; */<br>
+&nbsp;&nbsp;&nbsp; private static final ThreadLocal threadSession = new
+ThreadLocal();<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; public static Session getSession() throws
+HibernateException {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return currentSession();<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; public static Session currentSession() throws
+HibernateException {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; log.debug("Hibernate Session
+Manager :Fetching a hibernate session");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Session s = (Session)
+threadSession.get();<br>
+// Open a new Session, if this Thread has none yet<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (s == null) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; s =
+sessionFactory.openSession();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+threadSession.set(s);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!s.isOpen()) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; s =
+null;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; s =
+sessionFactory.openSession();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+threadSession.set(s);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!s.isConnected()) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+s.reconnect();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; log.debug("Hibernate Session
+Manager :Fetching a hibernate session done.");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return s;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp;&nbsp; * Close the current Hibernate session<br>
+&nbsp;&nbsp;&nbsp;&nbsp; * @throws HibernateException<br>
+&nbsp;&nbsp;&nbsp;&nbsp; * @throws InfrastructureException<br>
+&nbsp;&nbsp;&nbsp;&nbsp; */<br>
+&nbsp;&nbsp;&nbsp; public static void closeSession() throws
+HibernateException {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; log.debug("Hibernate Session
+Manager : closeSession");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Session s = (Session)
+threadSession.get();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; threadSession.set(null);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (s != null &amp;&amp;
+s.isOpen()) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+log.debug("Hibernate Session Manager : closing session");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+s.close();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+log.debug("Hibernate Session Manager : session closed");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; s = null;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp;&nbsp; * Connect this session to the current thread<br>
+&nbsp;&nbsp;&nbsp;&nbsp; * @param session<br>
+&nbsp;&nbsp;&nbsp;&nbsp; * @throws HibernateException<br>
+&nbsp;&nbsp;&nbsp;&nbsp; */<br>
+&nbsp;&nbsp;&nbsp; public static void reconnect(Session session) throws
+HibernateException {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!session.isConnected()) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+session.reconnect();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; threadSession.set(session);<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp;&nbsp; * Disconnect the current session from the
+current thread<br>
+&nbsp;&nbsp;&nbsp;&nbsp; * @return<br>
+&nbsp;&nbsp;&nbsp;&nbsp; * @throws HibernateException<br>
+&nbsp;&nbsp;&nbsp;&nbsp; * @throws HibernateException<br>
+&nbsp;&nbsp;&nbsp;&nbsp; */<br>
+&nbsp;&nbsp;&nbsp; public static Session disconnectSession() throws
+HibernateException {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Session session =
+currentSession();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (session.isConnected()
+&amp;&amp; session.isOpen()) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+session.disconnect();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return session;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp;&nbsp; * Default constructor<br>
+&nbsp;&nbsp;&nbsp;&nbsp; */<br>
+&nbsp;&nbsp;&nbsp; private SessionManager() {<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp;&nbsp; * Returns an instance of a session mananger
+used to obtain<br>
+&nbsp;&nbsp;&nbsp;&nbsp; * a Hibernate Session object.<br>
+&nbsp;&nbsp;&nbsp;&nbsp; * @return the Hibernate session manager.<br>
+&nbsp;&nbsp;&nbsp;&nbsp; */<br>
+&nbsp;&nbsp;&nbsp; public static SessionManager getInstance() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return sessionManager;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; public static Session openSession() throws
+HibernateException {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return
+SessionManager.currentSession();<br>
+&nbsp;&nbsp;&nbsp; }<br>
+}<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+SessionManager.java<br>
+<br>
+5. Study <strong>Hibernate.cfg.xml</strong>,
+this is Hibernate configuration file. Pay attention to the bold-fonted
+part indicating that query and secon-level caching are turned off<br>
+<br>
+<table style="width: 100%; text-align: left;" border="1" cellpadding="2"
+ cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">&lt;?xml version="1.0"
+encoding="UTF-8"?&gt;<br>
+&lt;!DOCTYPE hibernate-configuration PUBLIC<br>
+"-//Hibernate/Hibernate Configuration DTD 3.0//EN"<br>
+"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd"&gt;<br>
+&lt;hibernate-configuration&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;session-factory&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;property
+name="connection.driver_class"&gt;org.apache.derby.jdbc.ClientDriver&lt;/property&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;property
+name="connection.url"&gt;jdbc:derby://localhost:1527/mydatabase&lt;/property&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;property
+name="connection.username"&gt;app&lt;/property&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;property
+name="connection.password"&gt;app&lt;/property&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;!-- SQL dialect --&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;property
+name="dialect"&gt;org.hibernate.dialect.MySQLDialect&lt;/property&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;!-- &lt;property
+name="hibernate.hbm2ddl.auto"&gt;create&lt;/property&gt;--&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;property
+name="hibernate.show_sql"&gt;false&lt;/property&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;!-- &lt;property
+name="hibernate.connection.autocommit"&gt;true&lt;/property&gt; --&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;!--&lt;property
+name="hibernate.format_sql"&gt;true&lt;/property&gt;--&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;property
+name="transaction.factory_class"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+org.hibernate.transaction.JDBCTransactionFactory<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/property&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+ style="font-weight: bold; color: rgb(51, 51, 255);"> &lt;property
+name="hibernate.cache.use_query_cache"&gt;<span
+ style="color: rgb(255, 0, 0);">false</span>&lt;/property&gt;</span><br
+ style="font-weight: bold; color: rgb(51, 51, 255);">
+      <span style="font-weight: bold; color: rgb(51, 51, 255);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;property
+name="hibernate.cache.use_second_level_cache"&gt;<span
+ style="color: rgb(255, 0, 0);">false</span>&lt;/property&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;property
+name="hibernate.cache.provider_class"&gt;org.hibernate.cache.EhCacheProvider&lt;/property&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;mapping
+resource="com/wakaleo/articles/caching/businessobjects/Country.hbm.xml"/&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;mapping
+resource="com/wakaleo/articles/caching/businessobjects/Employee.hbm.xml"/&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;mapping
+resource="com/wakaleo/articles/caching/businessobjects/Language.hbm.xml"/&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;mapping
+resource="com/wakaleo/articles/caching/businessobjects/Airport.hbm.xml"/&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;/session-factory&gt;<br>
+&lt;/hibernate-configuration&gt;<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+Hibernate.cfg.xml<br>
+<br>
+6. Study the test package:<strong>
+TestTimer.java</strong>, <strong>CountryDAOTest.java, </strong>and <strong>EmployeeDAOTest.java.&nbsp;
+TestTiner.java </strong>
+is used to record the Hibernate query execution time.<br>
+<br>
+<table style="width: 100%; text-align: left;" border="1" cellpadding="2"
+ cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">package com.wakaleo.articles;<br>
+      <br>
+import junit.framework.TestCase;<br>
+      <br>
+/**<br>
+&nbsp;* Simple utilities class for benchmarking unit tests. Use is a
+follows:<br>
+&nbsp;*&nbsp;&nbsp;&nbsp;&nbsp; TestTimer t = new TestTimer("My task");<br>
+&nbsp;* &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; // Do something<br>
+&nbsp;*&nbsp;&nbsp;&nbsp;&nbsp; t.done();<br>
+&nbsp;*<br>
+&nbsp;* @author jfsmart<br>
+&nbsp;*/<br>
+public class TestTimer extends TestCase {<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; private long startTime;<br>
+&nbsp;&nbsp;&nbsp; private String message;<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp;&nbsp; * Initiate a timer<br>
+&nbsp;&nbsp;&nbsp;&nbsp; */<br>
+&nbsp;&nbsp;&nbsp; public TestTimer(String message) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; startTime =
+System.currentTimeMillis();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.message = message;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp;&nbsp; * Reset the timer for another timing session.<br>
+&nbsp;&nbsp;&nbsp;&nbsp; *<br>
+&nbsp;&nbsp;&nbsp;&nbsp; */<br>
+&nbsp;&nbsp;&nbsp; public void reset() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; startTime =
+System.currentTimeMillis();<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp;&nbsp; * End the timing session and output the
+results.<br>
+&nbsp;&nbsp;&nbsp;&nbsp; */<br>
+&nbsp;&nbsp;&nbsp; public void done() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.out.println(message<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
++ " : "<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
++ (System.currentTimeMillis() - startTime)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
++ " ms.");<br>
+&nbsp;&nbsp;&nbsp; }<br>
+}<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+TestTimer.java<br>
+<br>
+7. Study the CountryDAOTest.java.&nbsp; It is used to test
+CountryDAO.java. Pay attention to bold-fonted
+part that create Hibernate session and query database for list of
+country entities.<br>
+<br>
+<table style="width: 100%; text-align: left;" border="1" cellpadding="2"
+ cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">package
+com.wakaleo.articles.caching.dao;<br>
+      <br>
+import java.util.List;<br>
+      <br>
+import org.hibernate.Transaction;<br>
+      <br>
+import com.wakaleo.articles.TestTimer;<br>
+import com.wakaleo.articles.caching.businessobjects.Country;<br>
+      <br>
+import junit.framework.TestCase;<br>
+      <br>
+public class CountryDAOTest extends TestCase {<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /*<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; * Test method for
+'com.wakaleo.articles.caching.dao.CountryDAO.getCountries()'<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; */<br>
+&nbsp;&nbsp;&nbsp; public void testGetCountries() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CountryDAO dao = new
+CountryDAO();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for(int i = 1; i &lt;= 5;
+i++) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span
+ style="font-weight: bold;">Transaction tx =
+SessionManager.getSession().beginTransaction();</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+TestTimer timer = new TestTimer("testGetCountries");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span
+ style="font-weight: bold;">List countries = dao.getCountries();</span><br
+ style="font-weight: bold;">
+      <span style="font-weight: bold;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+tx.commit();</span><br style="font-weight: bold;">
+      <span style="font-weight: bold;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+timer.done();</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span
+ style="font-weight: bold;">SessionManager.closeSession();</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+assertNotNull(countries);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+}<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+CountryDAOTest.java<br>
+<br>
+8. Study the EmployeeDAOTest.&nbsp; This
+class is used to test EmployeeDAO.java. Pay attention to bold-fonted
+part that create Hibernate session and query database.<br>
+<br>
+<table style="width: 100%; text-align: left;" border="1" cellpadding="2"
+ cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">package
+com.wakaleo.articles.caching.dao;<br>
+      <br>
+import java.util.List;<br>
+      <br>
+import org.hibernate.Transaction;<br>
+      <br>
+import com.wakaleo.articles.TestTimer;<br>
+import com.wakaleo.articles.caching.businessobjects.Country;<br>
+      <br>
+import junit.framework.TestCase;<br>
+      <br>
+public class EmployeeDAOTest extends TestCase {<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; CountryDAO countryDao = new CountryDAO();<br>
+&nbsp;&nbsp;&nbsp; EmployeeDAO employeeDao = new EmployeeDAO();<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp;&nbsp; * Ensure that the Hibernate session is
+availiable<br>
+&nbsp;&nbsp;&nbsp;&nbsp; * to avoid the Hibernate initialisation
+interfering with<br>
+&nbsp;&nbsp;&nbsp;&nbsp; * the benchmarks<br>
+&nbsp;&nbsp;&nbsp;&nbsp; */<br>
+&nbsp;&nbsp;&nbsp; protected void setUp() throws Exception {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; super.setUp();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SessionManager.getSession();<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; public void testGetNZEmployees() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span
+ style="font-weight: bold;">TestTimer timer = new
+TestTimer("testGetNZEmployees");</span><br style="font-weight: bold;">
+      <span style="font-weight: bold;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Transaction tx = SessionManager.getSession().beginTransaction();</span><br
+ style="font-weight: bold;">
+      <span style="font-weight: bold;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Country nz = countryDao.findCountryByCode("nz");</span><br
+ style="font-weight: bold;">
+      <span style="font-weight: bold;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+List kiwis = employeeDao.getEmployeesByCountry(nz);</span><br
+ style="font-weight: bold;">
+      <span style="font-weight: bold;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+tx.commit();</span><br style="font-weight: bold;">
+      <span style="font-weight: bold;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+SessionManager.closeSession();</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; timer.done();<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; public void testGetAUEmployees() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span
+ style="font-weight: bold;">TestTimer timer = new
+TestTimer("testGetAUEmployees");</span><br style="font-weight: bold;">
+      <span style="font-weight: bold;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Transaction tx = SessionManager.getSession().beginTransaction();</span><br
+ style="font-weight: bold;">
+      <span style="font-weight: bold;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Country au = countryDao.findCountryByCode("au");</span><br
+ style="font-weight: bold;">
+      <span style="font-weight: bold;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+List aussis = employeeDao.getEmployeesByCountry(au);</span><br
+ style="font-weight: bold;">
+      <span style="font-weight: bold;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+tx.commit();</span><br style="font-weight: bold;">
+      <span style="font-weight: bold;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+SessionManager.closeSession();</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; timer.done();<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; public void testRepeatedGetEmployees() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; testGetNZEmployees();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; testGetAUEmployees();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; testGetNZEmployees();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; testGetAUEmployees();<br>
+&nbsp;&nbsp;&nbsp; }<br>
+}<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+EmployeeDAOTest.java<br>
+<br>
+<div align="center">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="index.html#Exercise_1">return to top of the exercise</a><br>
+<br>
+</div>
+</div>
+<h3 style="margin-left: 40px;" class="tutorial">Summary</h3>
+<p style="margin-left: 40px;">In this exercise,&nbsp; you have learned
+how to run Hibernate query and measure the execution time<br>
+</p>
+<div align="center"><a href="index.html#Tutorial_Exercises">return to
+the top</a><br>
+<br>
+</div>
+<h2><a name="Exercise_2"></a>Exercise 2: Hibernate Query With Caching
+Enabled<br>
+</h2>
+<p style="margin-left: 40px;">In this exercise, you are going to turn
+on Hibernate caching, query
+database, and compare performance result with previous runs.</p>
+<p>&nbsp;</p>
+<p
+ style="border-bottom: 0.5px solid Black; width: 100%; margin-left: 40px;"><strong><a
+ name="2.1"></a>(2.1) Change Hibernate configuration to allow caching</strong></p>
+<p style="margin-left: 40px;">1. Open <strong>Country.hbm.xml</strong>
+file and uncomment cache-usage configuration (the bold-fonted part)<br>
+</p>
+<div style="margin-left: 40px;">
+<table style="width: 100%; text-align: left;" border="1" cellpadding="2"
+ cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">&lt;?xml version="1.0"?&gt;<br>
+      <br>
+&lt;!DOCTYPE hibernate-mapping PUBLIC<br>
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN"<br>
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd"&gt;<br>
+      <br>
+&lt;hibernate-mapping
+package="com.wakaleo.articles.caching.businessobjects"&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;class name="Country" table="COUNTRY"
+dynamic-update="true"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;meta
+attribute="implement-equals"&gt;true&lt;/meta&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+ style="color: rgb(255, 0, 0);"> </span><span
+ style="font-weight: bold; color: rgb(255, 0, 0);">&lt;cache
+usage="read-only"&gt;</span><br style="font-weight: bold;">
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;id name="id" type="long"
+unsaved-value="null" &gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;column name="cn_id" not-null="true"/&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;generator class="increment"/&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/id&gt;<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;property
+column="cn_code" name="code" type="string"/&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;property
+column="cn_name" name="name" type="string"/&gt;<br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;set name="airports" &gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+ style="font-weight: bold; color: rgb(255, 0, 0);">&nbsp; &lt;cache
+usage="read-only"&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;key column="cn_id"/&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;one-to-many class="Airport"/&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/set&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;/class&gt;<br>
+&lt;/hibernate-mapping&gt;<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+Country.hbm.xml file<br>
+<br>
+</div>
+<p style="margin-left: 40px;">2. Repeat step 1 on <strong>Airport.hbm.xml,
+Employee.hbm.xml, Language.hbm.xml </strong>to enable Hibernate
+caching on all entity.</p>
+<div style="margin-left: 40px;">3. Open<strong> hibernate.cfg.xml</strong>
+file to change Hibernate configuration. Change the value of hibernate
+caching property in the configuration file to <strong>true </strong>(font-bolded
+part). This will enable query caching and secon-level caching.&nbsp;<br>
+<br>
+<table style="width: 100%; text-align: left;" border="1" cellpadding="2"
+ cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">&lt;?xml version="1.0"
+encoding="UTF-8"?&gt;<br>
+&lt;!DOCTYPE hibernate-configuration PUBLIC<br>
+"-//Hibernate/Hibernate Configuration DTD 3.0//EN"<br>
+"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd"&gt;<br>
+&lt;hibernate-configuration&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;session-factory&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;property
+name="connection.driver_class"&gt;org.apache.derby.jdbc.ClientDriver&lt;/property&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;property
+name="connection.url"&gt;jdbc:derby://localhost:1527/mydatabase&lt;/property&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;property
+name="connection.username"&gt;app&lt;/property&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;property
+name="connection.password"&gt;app&lt;/property&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;!-- SQL dialect --&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;property
+name="dialect"&gt;org.hibernate.dialect.MySQLDialect&lt;/property&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;!-- &lt;property
+name="hibernate.hbm2ddl.auto"&gt;create&lt;/property&gt;--&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;property
+name="hibernate.show_sql"&gt;false&lt;/property&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;!-- &lt;property
+name="hibernate.connection.autocommit"&gt;true&lt;/property&gt; --&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;!--&lt;property
+name="hibernate.format_sql"&gt;true&lt;/property&gt;--&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;property
+name="transaction.factory_class"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+org.hibernate.transaction.JDBCTransactionFactory<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/property&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: bold;">&nbsp;
+&lt;property
+name="hibernate.cache.use_query_cache"&gt;<span
+ style="color: rgb(255, 0, 0);">true</span>&lt;/property&gt;</span><br
+ style="font-weight: bold;">
+      <span style="font-weight: bold;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;property
+name="hibernate.cache.use_second_level_cache"&gt;<span
+ style="color: rgb(255, 0, 0);">true</span>&lt;/property&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span
+ style="font-weight: bold;">&lt;property
+name="hibernate.cache.provider_class"&gt;org.hibernate.cache.EhCacheProvider&lt;/property&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;mapping
+resource="com/wakaleo/articles/caching/businessobjects/Country.hbm.xml"/&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;mapping
+resource="com/wakaleo/articles/caching/businessobjects/Employee.hbm.xml"/&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;mapping
+resource="com/wakaleo/articles/caching/businessobjects/Language.hbm.xml"/&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;mapping
+resource="com/wakaleo/articles/caching/businessobjects/Airport.hbm.xml"/&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;/session-factory&gt;<br>
+&lt;/hibernate-configuration&gt;<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<strong style="font-weight: normal;">hibernate.cfg.xml</strong><br>
+</div>
+<p style="margin-left: 40px;">4. Build <strong>HibernateCache</strong>
+project.<br>
+</p>
+<div style="margin-left: 40px;">
+<ul>
+  <li>Right click project node and select Clean and Build Project.<br>
+  </li>
+</ul>
+</div>
+<p style="margin-left: 40px;">5. Run the<strong> HibernateCache Test
+Package</strong></p>
+<ul style="margin-left: 40px;">
+  <li>Right click on <strong>CountryDAOTest.java</strong> and select
+Run File<br>
+  </li>
+  <li>Observe the result in the Output window as shown below.</li>
+</ul>
+<div style="margin-left: 40px;">
+<table style="width: 100%; text-align: left;" border="1" cellpadding="2"
+ cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">[org.hibernate.cache.StandardQueryCache];
+using defaults.<br>
+testGetCountries : 375 ms.<br>
+testGetCountries : 47 ms.<br>
+testGetCountries : 31 ms.<br>
+testGetCountries : 32 ms.<br>
+testGetCountries : 31 ms.<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+</div>
+<div style="margin-left: 40px;"><img alt=""
+ src="index_files/2_cache1.png" style="width: 752px; height: 654px;"><br>
+<br>
+</div>
+<ul style="margin-left: 40px;">
+  <li>Right click on <strong>EmployeeDAOTest.java</strong> and select
+Run File<br>
+  </li>
+  <li>Observe the result in the Output window as shown below.</li>
+</ul>
+<div style="margin-left: 40px;">
+<table style="width: 100%; text-align: left;" border="1" cellpadding="2"
+ cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">[org.hibernate.cache.StandardQueryCache];
+using defaults.<br>
+testGetNZEmployees : 484 ms.<br>
+testGetAUEmployees : 172 ms.<br>
+testGetNZEmployees : 31 ms.<br>
+testGetAUEmployees : 16 ms.<br>
+testGetNZEmployees : 47 ms.<br>
+testGetAUEmployees : 15 ms.<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<img alt="" src="index_files/2_cache2.png"
+ style="width: 752px; height: 654px;"><br>
+<br>
+</div>
+<p style="margin-left: 40px;">As you can see, the result between
+Hibernate query with and without caching on are not much different in
+the first run. However, querying time is reduced dramatically in the
+subsequent runs. This is because querying results from the first run is
+cached.<br>
+</p>
+<p style="margin-left: 40px;"><br>
+</p>
+<p
+ style="border-bottom: 0.5px solid Black; width: 100%; margin-left: 40px;"><strong><a
+ name="2.2"></a>(2.2) Look under the hood of the EhCache configuration
+file</strong></p>
+<p style="margin-left: 40px;">1. Study<strong> ehcache.xml </strong>file,
+as shown in figure 2.2-1 below. This file is Hibernate caching
+configuration. You can control caching property from here.<br>
+</p>
+<div style="margin-left: 40px;">
+<table style="width: 100%; text-align: left;" border="1" cellpadding="2"
+ cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">&lt;ehcache&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;diskStore path="java.io.tmpdir"/&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;defaultCache<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; maxElementsInMemory="10000"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; eternal="false"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; timeToIdleSeconds="120"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; timeToLiveSeconds="120"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; overflowToDisk="true"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; diskPersistent="false"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+diskExpiryThreadIntervalSeconds="120"<br>
+&nbsp;&nbsp;&nbsp; /&gt;<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; &lt;cache
+name="com.wakaleo.articles.caching.businessobjects.Country"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+maxElementsInMemory="300"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+eternal="true"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+overflowToDisk="false"<br>
+&nbsp;&nbsp;&nbsp; /&gt;<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; &lt;cache
+name="com.wakaleo.articles.caching.businessobjects.Employee"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+maxElementsInMemory="5000"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+eternal="false"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+overflowToDisk="false"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+timeToIdleSeconds="300"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+timeToLiveSeconds="600"<br>
+&nbsp;&nbsp;&nbsp; /&gt;<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; &lt;cache
+name="com.wakaleo.articles.caching.businessobjects.Language"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+maxElementsInMemory="100"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+eternal="true"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+overflowToDisk="false"<br>
+&nbsp;&nbsp;&nbsp; /&gt;<br>
+&nbsp;&nbsp;&nbsp; <br>
+&lt;/ehcache&gt;<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+ehcache.xml<br>
+</div>
+<div align="center">
+<p style="margin-left: 40px;"><a href="#Exercise_2">return to top of
+the exercise</a><br>
+<br>
+</p>
+</div>
+<h3 style="margin-left: 40px;" class="tutorial">Summary</h3>
+<p style="margin-left: 40px;">In this exercise,&nbsp; you have learned
+how to turn on query and second-level caching in Hibernate <br>
+</p>
+<div align="center"><a href="#Tutorial_Exercises">return to the top</a></div>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p></p>
+<!-- ======================================================================================== -->
+</body>
+</html>

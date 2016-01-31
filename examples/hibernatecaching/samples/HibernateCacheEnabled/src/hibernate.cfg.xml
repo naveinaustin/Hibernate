@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <property name="connection.driver_class">org.apache.derby.jdbc.ClientDriver</property>
+        <property name="connection.url">jdbc:derby://localhost:1527/mydatabase</property>
+        <property name="connection.username">app</property>
+        <property name="connection.password">app</property>
+        
+        <!-- SQL dialect -->
+        <property name="dialect">org.hibernate.dialect.MySQLDialect</property>
+        <!-- <property name="hibernate.hbm2ddl.auto">create</property>-->
+        <property name="hibernate.show_sql">false</property>
+        <!-- <property name="hibernate.connection.autocommit">true</property> -->
+        <!--<property name="hibernate.format_sql">true</property>-->
+        <property name="transaction.factory_class">
+            org.hibernate.transaction.JDBCTransactionFactory
+        </property>
+        
+        <property name="hibernate.cache.use_query_cache">true</property>
+        <property name="hibernate.cache.use_second_level_cache">true</property>
+        <property name="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</property>
+        
+        <mapping resource="com/wakaleo/articles/caching/businessobjects/Country.hbm.xml"/>
+        <mapping resource="com/wakaleo/articles/caching/businessobjects/Employee.hbm.xml"/>
+        <mapping resource="com/wakaleo/articles/caching/businessobjects/Language.hbm.xml"/>
+        <mapping resource="com/wakaleo/articles/caching/businessobjects/Airport.hbm.xml"/>
+    </session-factory>
+</hibernate-configuration>
+
